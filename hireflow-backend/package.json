@@ -1,0 +1,16 @@
+{
+  "name": "hireflow-backend",
+  "version": "1.0.0",
+  "description": "HireFlow Applicant Tracking System - backend API",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.1"
+  }
+}
