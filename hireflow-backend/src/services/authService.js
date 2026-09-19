@@ -79,7 +79,7 @@ async function login({ email, password }) {
   }
 
   const pool = getPool();
-  const res = await pool.query('SELECT id, email, password_hash, role FROM users WHERE email = $1', [
+  const res = await pool.query('SELECT id, email, password_hash, role, is_active FROM users WHERE email = $1', [
     String(email).trim().toLowerCase(),
   ]);
   const user = res.rows[0];
@@ -88,6 +88,9 @@ async function login({ email, password }) {
   const ok = user ? await bcrypt.compare(String(password), user.password_hash) : false;
   if (!ok) {
     throw new HttpError(401, 'invalid credentials.');
+  }
+  if (user.is_active === false) {
+    throw new HttpError(403, 'This account has been deactivated.');
   }
 
   if (!process.env.JWT_SECRET) {
