@@ -1,13 +1,11 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 
 export default function ProtectedRoute({ allowedRoles }) {
-  const { user, token, loading } = useAuth();
+  const { user, token } = useAuth();
 
-  // Wait for session restoration so a stored session is never bounced to /login.
-  if (loading) {
-    return <p>Loading…</p>;
-  }
+  // Auth state initializes synchronously from storage, so a stored session
+  // is present on first render and never flashes through to /login.
   if (!token || !user) {
     return <Navigate to="/login" replace />;
   }

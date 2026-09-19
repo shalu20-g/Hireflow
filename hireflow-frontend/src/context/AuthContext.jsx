@@ -1,21 +1,20 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import axiosInstance, { SESSION_KEY, readSession } from '../api/axiosInstance';
+import { AuthContext } from './authContext';
 
-const AuthContext = createContext(null);
+function readStoredUser() {
+  return readSession()?.user ?? null;
+}
+
+function readStoredToken() {
+  return readSession()?.token ?? null;
+}
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const session = readSession();
-    if (session) {
-      setToken(session.token);
-      setUser(session.user);
-    }
-    setLoading(false);
-  }, []);
+  // Session is restored synchronously during initialization, so the first
+  // render already knows the auth state and no loading flash can occur.
+  const [user, setUser] = useState(readStoredUser);
+  const [token, setToken] = useState(readStoredToken);
 
   const login = useCallback(async (email, password) => {
     const res = await axiosInstance.post('/api/auth/login', { email, password });
@@ -37,17 +36,9 @@ export function AuthProvider({ children }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, token, role: user?.role || null, loading, login, logout }),
-    [user, token, loading, login, logout],
+    () => ({ user, token, role: user?.role || null, login, logout }),
+    [user, token, login, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) {
-    throw new Error('useAuth must be used within an AuthProvider.');
-  }
-  return ctx;
 }

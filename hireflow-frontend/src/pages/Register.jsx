@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 
 function friendlyError(err) {
   const message = err?.response?.data?.message;

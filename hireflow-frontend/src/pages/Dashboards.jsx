@@ -1,4 +1,4 @@
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 
 function Placeholder({ title, label }) {
   const { user, logout } = useAuth();
@@ -15,10 +15,6 @@ function Placeholder({ title, label }) {
       </button>
     </main>
   );
-}
-
-export function CandidateDashboard() {
-  return <Placeholder title="Candidate Dashboard" label="Candidate placeholder is displayed." />;
 }
 
 export function RecruiterDashboard() {
