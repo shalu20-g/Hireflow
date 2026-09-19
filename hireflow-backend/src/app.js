@@ -2,6 +2,7 @@
 
 const express = require('express');
 const authRoutes = require('./routes/authRoutes');
+const testRoutes = require('./routes/testRoutes');
 const { errorHandler } = require('./controllers/authController');
 
 const app = express();
@@ -9,6 +10,7 @@ const app = express();
 app.use(express.json());
 app.get('/api/health', (_req, res) => res.status(200).json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
+app.use('/api/test', testRoutes); // auth enforced inside the router; /api/auth and /api/health stay public
 app.use((_req, res) => res.status(404).json({ message: 'Not found.' }));
 app.use(errorHandler);
 
