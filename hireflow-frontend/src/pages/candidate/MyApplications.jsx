@@ -19,9 +19,8 @@ function formatDate(value) {
 
 const COLUMNS = [
   { key: 'title', label: 'Job title', render: (row) => row.job.title },
-  // GET /api/applications/mine returns no company name or id for the job,
-  // so this column intentionally renders a placeholder (see report).
-  { key: 'company', label: 'Company', render: () => '—' },
+  // Company name comes from the backend's nested application.job.company object.
+  { key: 'company', label: 'Company', render: (row) => row.job.company?.name || '—' },
   { key: 'applied', label: 'Applied date', render: (row) => formatDate(row.applied_at) },
   { key: 'status', label: 'Status', render: (row) => <StatusBadge status={row.status} /> },
 ];

@@ -7,6 +7,7 @@ const jobRoutes = require('./routes/jobRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const candidateRoutes = require('./routes/candidateRoutes');
+const companyRoutes = require('./routes/companyRoutes');
 const { errorHandler } = require('./controllers/authController');
 
 const app = express();
@@ -20,6 +21,7 @@ app.use('/api/jobs', jobRoutes); // public + protected job endpoints (see routes
 app.use('/api/applications', applicationRoutes); // candidate + recruiter application endpoints
 app.use('/api/admin', adminRoutes); // admin-only (auth + role enforced inside the router)
 app.use('/api/candidates', candidateRoutes); // candidate-only (auth + role enforced inside the router)
+app.use('/api/companies', companyRoutes); // recruiter-only (auth + role enforced inside the router)
 app.use((_req, res) => res.status(404).json({ message: 'Not found.' }));
 app.use(errorHandler);
 

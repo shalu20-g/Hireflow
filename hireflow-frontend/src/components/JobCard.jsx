@@ -16,8 +16,8 @@ export default function JobCard({ job, applied, applying, applyDisabled, onApply
           </>
         )}
       </p>
-      {/* Backend exposes company_id only (no company name on GET /api/jobs). */}
-      <p className="job-company">Company ID: {job.company_id}</p>
+      {/* Company name comes from the backend's nested job.company object. */}
+      <p className="job-company">{job.company?.name || `Company ID: ${job.company_id}`}</p>
       {job.description && <p className="job-desc">{job.description}</p>}
       {onApply && (
         <button
