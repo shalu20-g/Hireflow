@@ -79,7 +79,7 @@ async function login({ email, password }) {
   }
 
   const pool = getPool();
-  const res = await pool.query('SELECT id, email, password_hash, role, is_active FROM users WHERE email = $1', [
+  const res = await pool.query('SELECT id, email, password_hash, role, is_active FROM users WHERE LOWER(email) = $1', [
     String(email).trim().toLowerCase(),
   ]);
   const user = res.rows[0];
