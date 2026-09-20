@@ -158,4 +158,21 @@ async function getJobById(jobId) {
   return res.rows[0];
 }
 
-module.exports = { createJob, updateJob, closeJob, listJobs, getJobById };
+// Jobs owned by the authenticated recruiter, with company context for display.
+// Identity comes only from userId (verified JWT); no client-supplied ids.
+async function listMine({ userId }) {
+  const pool = getPool();
+  const res = await pool.query(
+    `SELECT j.id, j.company_id, j.title, j.description, j.location, j.job_type,
+            j.status, j.created_at, c.name AS company_name
+     FROM jobs j
+     JOIN companies c ON c.id = j.company_id
+     JOIN recruiters r ON r.id = c.recruiter_id
+     WHERE r.user_id = $1
+     ORDER BY j.id`,
+    [userId]
+  );
+  return res.rows;
+}
+
+module.exports = { createJob, updateJob, closeJob, listJobs, getJobById, listMine };

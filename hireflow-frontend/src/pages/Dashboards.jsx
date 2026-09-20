@@ -17,10 +17,6 @@ function Placeholder({ title, label }) {
   );
 }
 
-export function RecruiterDashboard() {
-  return <Placeholder title="Recruiter Dashboard" label="Recruiter placeholder is displayed." />;
-}
-
 export function AdminDashboard() {
   return <Placeholder title="Admin Dashboard" label="Admin placeholder is displayed." />;
 }

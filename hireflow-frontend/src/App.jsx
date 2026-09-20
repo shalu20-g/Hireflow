@@ -4,11 +4,14 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Unauthorized from './pages/Unauthorized';
-import { AdminDashboard, RecruiterDashboard } from './pages/Dashboards';
+import { AdminDashboard } from './pages/Dashboards';
 import CandidateLayout from './pages/candidate/CandidateLayout';
 import JobBrowse from './pages/candidate/JobBrowse';
 import MyApplications from './pages/candidate/MyApplications';
 import Profile from './pages/candidate/Profile';
+import RecruiterLayout from './pages/recruiter/RecruiterLayout';
+import MyJobs from './pages/recruiter/MyJobs';
+import JobApplicants from './pages/recruiter/JobApplicants';
 
 function HomeRedirect() {
   const { user, token } = useAuth();
@@ -34,7 +37,11 @@ export default function App() {
         </Route>
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['recruiter']} />}>
-        <Route path="/recruiter/*" element={<RecruiterDashboard />} />
+        <Route path="/recruiter" element={<RecruiterLayout />}>
+          <Route index element={<MyJobs />} />
+          <Route path="jobs" element={<MyJobs />} />
+          <Route path="jobs/:jobId/applicants" element={<JobApplicants />} />
+        </Route>
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
         <Route path="/admin/*" element={<AdminDashboard />} />

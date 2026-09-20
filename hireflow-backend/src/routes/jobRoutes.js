@@ -10,6 +10,7 @@ const router = Router();
 
 // Static/public collection route first so it can never be shadowed by '/:id'.
 router.get('/', jobController.handleList); // PUBLIC: open jobs only
+router.get('/mine', authMiddleware, requireRole('recruiter'), jobController.handleListMine);
 router.get('/:id/applicants', authMiddleware, requireRole('recruiter'), applicationController.handleListApplicants);
 router.get('/:id', authMiddleware, jobController.handleGet); // any authenticated role
 router.post('/', authMiddleware, requireRole('recruiter'), jobController.handleCreate);

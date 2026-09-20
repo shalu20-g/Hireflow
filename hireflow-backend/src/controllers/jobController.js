@@ -47,4 +47,13 @@ async function handleGet(req, res, next) {
   }
 }
 
-module.exports = { handleCreate, handleUpdate, handleClose, handleList, handleGet };
+async function handleListMine(req, res, next) {
+  try {
+    const jobs = await jobService.listMine({ userId: req.user.id });
+    res.status(200).json({ jobs });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { handleCreate, handleUpdate, handleClose, handleList, handleGet, handleListMine };
