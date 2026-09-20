@@ -42,7 +42,7 @@ export default function Register() {
   }
 
   return (
-    <main>
+    <main className="auth">
       <h1>HireFlow — Register</h1>
       <form onSubmit={onSubmit}>
         <label>

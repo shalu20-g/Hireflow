@@ -34,7 +34,7 @@ export default function Login() {
   }
 
   return (
-    <main>
+    <main className="auth">
       <h1>HireFlow — Log in</h1>
       <form onSubmit={onSubmit}>
         <label>

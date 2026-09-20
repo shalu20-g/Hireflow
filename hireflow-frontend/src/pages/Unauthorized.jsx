@@ -8,7 +8,7 @@ export default function Unauthorized() {
   const home = HOME_BY_ROLE[role] || '/login';
 
   return (
-    <main>
+    <main className="auth">
       <h1>Not authorized</h1>
       <p>You do not have permission to access this area.</p>
       <p>
