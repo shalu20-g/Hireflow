@@ -132,6 +132,9 @@ label {
   gap: 4px;
   font-weight: 600;
   color: var(--text-h);
+  /* Definite column so eager children (input max-width:100%) resolve against
+     the cell instead of their own intrinsic width. */
+  grid-template-columns: minmax(0, 1fr);
 }
 
 input,
@@ -143,6 +146,7 @@ button {
   border-radius: 6px;
   background: var(--bg);
   color: var(--text-h);
+  box-sizing: border-box;
 }
 
 button {
@@ -188,6 +192,12 @@ button:disabled {
   margin: 0;
 }
 
+/* Long emails must wrap instead of pushing the header past the viewport. */
+.dash-user {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
 .dash-nav {
   display: flex;
   flex-wrap: wrap;
@@ -209,6 +219,17 @@ button:disabled {
   flex: 1 1 160px;
 }
 
+/* Let flex labels shrink below input intrinsic width; cap inputs at the cell
+   so a wide field can never push the page past the viewport. */
+.filter-bar > label {
+  min-width: 0;
+}
+
+.filter-bar input,
+.filter-bar select {
+  max-width: 100%;
+}
+
 .job-list {
   display: grid;
   gap: 12px;
@@ -222,6 +243,8 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .job-card h3 {
@@ -327,6 +350,8 @@ dt {
 
 dd {
   margin: 0;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 @media (max-width: 640px) {
