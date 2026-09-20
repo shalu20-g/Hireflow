@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/useAuth';
 
 export default function RecruiterLayout() {
@@ -14,13 +14,15 @@ export default function RecruiterLayout() {
     <div className="dash-layout">
       <header className="dash-header">
         <h1>Recruiter Dashboard</h1>
-        <p className="dash-user">{user?.email}</p>
+        <div className="dash-account">
+          <p className="dash-user">{user?.email}</p>
+          <button type="button" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </header>
       <nav aria-label="Recruiter navigation" className="dash-nav">
-        <Link to="/recruiter/jobs">My Jobs</Link>
-        <button type="button" onClick={handleLogout}>
-          Logout
-        </button>
+        <NavLink to="/recruiter/jobs">My Jobs</NavLink>
       </nav>
       <main className="dash-main">
         <Outlet />

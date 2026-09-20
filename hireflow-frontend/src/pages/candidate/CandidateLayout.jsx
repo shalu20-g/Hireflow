@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/useAuth';
 
 export default function CandidateLayout() {
@@ -14,15 +14,17 @@ export default function CandidateLayout() {
     <div className="dash-layout">
       <header className="dash-header">
         <h1>Candidate Dashboard</h1>
-        <p className="dash-user">{user?.email}</p>
+        <div className="dash-account">
+          <p className="dash-user">{user?.email}</p>
+          <button type="button" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </header>
       <nav aria-label="Candidate navigation" className="dash-nav">
-        <Link to="/candidate/jobs">Jobs</Link>
-        <Link to="/candidate/applications">My Applications</Link>
-        <Link to="/candidate/profile">Profile</Link>
-        <button type="button" onClick={handleLogout}>
-          Logout
-        </button>
+        <NavLink to="/candidate/jobs">Jobs</NavLink>
+        <NavLink to="/candidate/applications">My Applications</NavLink>
+        <NavLink to="/candidate/profile">Profile</NavLink>
       </nav>
       <main className="dash-main">
         <Outlet />

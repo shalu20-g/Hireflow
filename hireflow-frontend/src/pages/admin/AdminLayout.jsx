@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/useAuth';
 
 export default function AdminLayout() {
@@ -14,14 +14,16 @@ export default function AdminLayout() {
     <div className="dash-layout">
       <header className="dash-header">
         <h1>Admin Dashboard</h1>
-        <p className="dash-user">{user?.email}</p>
+        <div className="dash-account">
+          <p className="dash-user">{user?.email}</p>
+          <button type="button" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </header>
       <nav aria-label="Admin navigation" className="dash-nav">
-        <Link to="/admin/users">Users</Link>
-        <Link to="/admin/stats">Stats</Link>
-        <button type="button" onClick={handleLogout}>
-          Logout
-        </button>
+        <NavLink to="/admin/users">Users</NavLink>
+        <NavLink to="/admin/stats">Stats</NavLink>
       </nav>
       <main className="dash-main">
         <Outlet />

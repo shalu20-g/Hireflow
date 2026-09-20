@@ -230,7 +230,7 @@ export default function MyJobs() {
               Edit
             </button>{' '}
             {row.status === 'open' && (
-              <button type="button" onClick={() => onClose(row)} disabled={closingId === row.id}>
+              <button type="button" className="button-danger" onClick={() => onClose(row)} disabled={closingId === row.id}>
                 {closingId === row.id ? 'Closing…' : 'Close'}
               </button>
             )}
@@ -241,8 +241,6 @@ export default function MyJobs() {
 
   return (
     <section aria-label="My jobs">
-      <h2>My Jobs</h2>
-
       <h3>My Companies</h3>
       {companies !== null && companies.length > 0 && (
         <ul>

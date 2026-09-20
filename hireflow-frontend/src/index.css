@@ -74,17 +74,18 @@ h2 {
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
+  font-size: 40px;
+  line-height: 1.4;
+  letter-spacing: -1px;
+  margin: 24px 0;
   @media (max-width: 1024px) {
-    font-size: 36px;
+    font-size: 30px;
     margin: 20px 0;
   }
 }
 h2 {
   font-size: 24px;
-  line-height: 118%;
+  line-height: 1.35;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
   @media (max-width: 1024px) {
@@ -140,6 +141,13 @@ main.auth form {
   text-align: left;
 }
 
+/* Auth headings stay on one line at any width without oversized type. */
+main.auth h1 {
+  white-space: nowrap;
+  font-size: clamp(26px, 7vw, 40px);
+  letter-spacing: -0.5px;
+}
+
 form {
   display: grid;
   gap: 12px;
@@ -180,6 +188,18 @@ button:disabled {
   opacity: 0.55;
 }
 
+/* Restrained destructive-action treatment (deactivate, close, reject). */
+.button-danger {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 [role='alert'] {
   color: #b91c1c;
   font-weight: 600;
@@ -199,16 +219,25 @@ button:disabled {
 .dash-header {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 8px 16px;
   border-bottom: 1px solid var(--border);
   padding-bottom: 8px;
 }
 
 .dash-header h1 {
-  font-size: 28px;
+  font-size: 24px;
   margin: 0;
+}
+
+/* Account cluster pinned to the header's top-right. */
+.dash-account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  min-width: 0;
 }
 
 /* Long emails must wrap instead of pushing the header past the viewport. */
@@ -220,8 +249,24 @@ button:disabled {
 .dash-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 4px 16px;
   align-items: center;
+}
+
+.dash-nav a {
+  color: var(--text-h);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 4px 2px;
+}
+
+.dash-nav a:hover {
+  text-decoration: underline;
+}
+
+.dash-nav a.active {
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
 }
 
 .filter-bar {
@@ -285,6 +330,7 @@ button:disabled {
   font-size: 32px;
   font-weight: 700;
   color: var(--text-h);
+  font-variant-numeric: tabular-nums;
 }
 
 .table-scroll {
@@ -303,6 +349,15 @@ td {
   padding: 8px 10px;
   border-bottom: 1px solid var(--border);
   vertical-align: top;
+}
+
+th {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  background: var(--code-bg);
+  white-space: nowrap;
 }
 
 .status-badge {

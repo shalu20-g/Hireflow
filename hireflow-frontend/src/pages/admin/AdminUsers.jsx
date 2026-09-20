@@ -91,6 +91,7 @@ export default function AdminUsers() {
         row.is_active ? (
           <button
             type="button"
+            className="button-danger"
             onClick={() => onDeactivate(row)}
             disabled={deactivatingId === row.id}
             title={`Deactivate ${row.email}`}
