@@ -119,7 +119,7 @@ export default function JobApplicants() {
               <span key={s}>
                 <button
                   type="button"
-                  className={s === 'REJECTED' ? 'button-danger' : undefined}
+                  className={s === 'REJECTED' ? 'button-danger' : 'button-primary'}
                   onClick={() => onAdvance(row, s)}
                   disabled={updatingId === row.id}
                   title={`Move to ${s}`}

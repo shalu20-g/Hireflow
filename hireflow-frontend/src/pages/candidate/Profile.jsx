@@ -142,7 +142,7 @@ export default function Profile() {
             <input name="resume_link" value={editForm.resume_link} onChange={onEditChange} />
           </label>
           {formError && <p role="alert">{formError}</p>}
-          <button type="submit" disabled={saving}>
+          <button type="submit" className="button-primary" disabled={saving}>
             {saving ? 'Saving…' : 'Save'}
           </button>{' '}
           <button type="button" onClick={() => setEditing(false)} disabled={saving}>

@@ -6,15 +6,9 @@ export default function JobCard({ job, applied, applying, applyDisabled, onApply
     <article className="job-card">
       <h3>{job.title}</h3>
       <p className="job-meta">
-        <span>{job.location}</span>
-        {' · '}
-        <span>{job.job_type}</span>
-        {job.status && (
-          <>
-            {' · '}
-            <span className="job-status">{job.status}</span>
-          </>
-        )}
+        <span className="tag">{job.location}</span>
+        <span className="tag">{job.job_type}</span>
+        {job.status && <span className="job-status">{job.status}</span>}
       </p>
       {/* Company name comes from the backend's nested job.company object. */}
       <p className="job-company">{job.company?.name || `Company ID: ${job.company_id}`}</p>
@@ -22,11 +16,12 @@ export default function JobCard({ job, applied, applying, applyDisabled, onApply
       {onApply && (
         <button
           type="button"
+          className={isApplied ? 'button-applied' : 'button-primary'}
           onClick={() => onApply(job)}
           disabled={isApplied || busy || applyDisabled}
           title={isApplied ? 'You have already applied to this job' : `Apply to ${job.title}`}
         >
-          {isApplied ? 'Applied' : busy ? 'Applying…' : applyLabel || 'Apply'}
+          {isApplied ? '✓ Applied' : busy ? 'Applying…' : applyLabel || 'Apply'}
         </button>
       )}
     </article>

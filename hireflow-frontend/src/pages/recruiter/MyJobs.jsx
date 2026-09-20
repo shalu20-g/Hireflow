@@ -214,7 +214,7 @@ export default function MyJobs() {
       render: (row) =>
         editingId === row.id ? (
           <>
-            <button type="button" onClick={() => onSaveEdit(row)} disabled={savingId === row.id}>
+            <button type="button" className="button-primary" onClick={() => onSaveEdit(row)} disabled={savingId === row.id}>
               {savingId === row.id ? 'Saving…' : 'Save'}
             </button>{' '}
             <button type="button" onClick={() => setEditingId(null)} disabled={savingId === row.id}>
@@ -261,7 +261,7 @@ export default function MyJobs() {
           Description (optional)
           <input name="description" value={coForm.description} onChange={onCoFormChange} />
         </label>
-        <button type="submit" disabled={creatingCo}>
+        <button type="submit" className="button-primary" disabled={creatingCo}>
           {creatingCo ? 'Creating…' : 'Create company'}
         </button>
       </form>
@@ -298,7 +298,7 @@ export default function MyJobs() {
             </select>
           </label>
         )}
-        <button type="submit" disabled={creating}>
+        <button type="submit" className="button-primary" disabled={creating}>
           {creating ? 'Creating…' : 'Create job'}
         </button>
       </form>

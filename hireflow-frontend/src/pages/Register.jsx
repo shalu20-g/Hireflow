@@ -71,7 +71,7 @@ export default function Register() {
           </select>
         </label>
         {error && <p role="alert">{error}</p>}
-        <button type="submit" disabled={submitting}>
+        <button type="submit" className="button-primary" disabled={submitting}>
           {submitting ? 'Registering…' : 'Register'}
         </button>
       </form>
