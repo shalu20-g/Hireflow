@@ -239,6 +239,12 @@ button:disabled {
   font-size: 15px;
 }
 
+.stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
 .table-scroll {
   overflow-x: auto;
 }

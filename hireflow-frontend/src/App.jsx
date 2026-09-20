@@ -4,7 +4,6 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Unauthorized from './pages/Unauthorized';
-import { AdminDashboard } from './pages/Dashboards';
 import CandidateLayout from './pages/candidate/CandidateLayout';
 import JobBrowse from './pages/candidate/JobBrowse';
 import MyApplications from './pages/candidate/MyApplications';
@@ -12,6 +11,9 @@ import Profile from './pages/candidate/Profile';
 import RecruiterLayout from './pages/recruiter/RecruiterLayout';
 import MyJobs from './pages/recruiter/MyJobs';
 import JobApplicants from './pages/recruiter/JobApplicants';
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminStats from './pages/admin/AdminStats';
 
 function HomeRedirect() {
   const { user, token } = useAuth();
@@ -44,7 +46,11 @@ export default function App() {
         </Route>
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
-        <Route path="/admin/*" element={<AdminDashboard />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminUsers />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="stats" element={<AdminStats />} />
+        </Route>
       </Route>
 
       <Route path="/" element={<HomeRedirect />} />
