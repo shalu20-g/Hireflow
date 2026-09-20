@@ -5,6 +5,27 @@ const { HttpError } = require('./authService');
 
 const JOB_COLUMNS = 'id, company_id, title, description, location, job_type, status, created_at';
 
+// Qualified select for JOINed public reads (bare JOB_COLUMNS stays for
+// INSERT/UPDATE ... RETURNING, where aliases are invalid).
+const JOB_COLUMNS_JOINED = `j.id, j.company_id, j.title, j.description, j.location,
+  j.job_type, j.status, j.created_at, c.name AS company_name`;
+
+// Attach the nested { id, name } company object the frontend displays.
+// Only id/name cross the boundary; no recruiter or private company data.
+function withCompany(row) {
+  return {
+    id: row.id,
+    company_id: row.company_id,
+    company: { id: row.company_id, name: row.company_name },
+    title: row.title,
+    description: row.description,
+    location: row.location,
+    job_type: row.job_type,
+    status: row.status,
+    created_at: row.created_at,
+  };
+}
+
 function parseJobId(raw) {
   const id = Number(raw);
   if (!Number.isInteger(id) || id <= 0) {
@@ -127,35 +148,39 @@ function ilikePattern(value) {
 
 async function listJobs({ title, location, job_type }) {
   const pool = getPool();
-  const conditions = ["status = 'open'"];
+  const conditions = ["j.status = 'open'"];
   const params = [];
   if (title !== undefined && title !== null && String(title) !== '') {
     params.push(ilikePattern(title));
-    conditions.push(`title ILIKE $${params.length}`);
+    conditions.push(`j.title ILIKE $${params.length}`);
   }
   if (location !== undefined && location !== null && String(location) !== '') {
     params.push(ilikePattern(location));
-    conditions.push(`location ILIKE $${params.length}`);
+    conditions.push(`j.location ILIKE $${params.length}`);
   }
   if (job_type !== undefined && job_type !== null && String(job_type) !== '') {
     params.push(String(job_type));
-    conditions.push(`job_type = $${params.length}`);
+    conditions.push(`j.job_type = $${params.length}`);
   }
   const res = await pool.query(
-    `SELECT ${JOB_COLUMNS} FROM jobs WHERE ${conditions.join(' AND ')} ORDER BY id`,
+    `SELECT ${JOB_COLUMNS_JOINED} FROM jobs j JOIN companies c ON c.id = j.company_id
+     WHERE ${conditions.join(' AND ')} ORDER BY j.id`,
     params
   );
-  return res.rows;
+  return res.rows.map(withCompany);
 }
 
 async function getJobById(jobId) {
   const pool = getPool();
   const id = parseJobId(jobId);
-  const res = await pool.query(`SELECT ${JOB_COLUMNS} FROM jobs WHERE id = $1`, [id]);
+  const res = await pool.query(
+    `SELECT ${JOB_COLUMNS_JOINED} FROM jobs j JOIN companies c ON c.id = j.company_id WHERE j.id = $1`,
+    [id]
+  );
   if (res.rows.length === 0) {
     throw new HttpError(404, 'Job not found.');
   }
-  return res.rows[0];
+  return withCompany(res.rows[0]);
 }
 
 // Jobs owned by the authenticated recruiter, with company context for display.

@@ -82,10 +82,13 @@ async function listMine({ userId }) {
   const candidateId = await getCandidateId(pool, userId);
   const res = await pool.query(
     `SELECT a.id, a.status, a.applied_at,
-            j.id AS job_id, j.title AS job_title, j.description AS job_description,
-            j.location AS job_location, j.job_type AS job_job_type, j.status AS job_status
+            j.id AS job_id, j.company_id AS job_company_id, j.title AS job_title,
+            j.description AS job_description, j.location AS job_location,
+            j.job_type AS job_job_type, j.status AS job_status,
+            c.name AS job_company_name
      FROM applications a
      JOIN jobs j ON j.id = a.job_id
+     JOIN companies c ON c.id = j.company_id
      WHERE a.candidate_id = $1
      ORDER BY a.applied_at DESC, a.id DESC`,
     [candidateId]
@@ -96,6 +99,8 @@ async function listMine({ userId }) {
     applied_at: row.applied_at,
     job: {
       id: row.job_id,
+      company_id: row.job_company_id,
+      company: { id: row.job_company_id, name: row.job_company_name },
       title: row.job_title,
       description: row.job_description,
       location: row.job_location,
