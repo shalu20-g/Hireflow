@@ -204,12 +204,19 @@ The application lifecycle is enforced in `hireflow-backend/src/services/applicat
 
 Allowed transitions (any other transition returns 400):
 
-```
-APPLIED ──→ SHORTLISTED ──→ INTERVIEW ──→ SELECTED ──→ HIRED
-   │              │               │              │
-   └──────────────┴───────────────┴──────────────┴──→ REJECTED
-
-HIRED → (none)        REJECTED → (none)
+```mermaid
+stateDiagram-v2
+    [*] --> APPLIED
+    APPLIED --> SHORTLISTED
+    APPLIED --> REJECTED
+    SHORTLISTED --> INTERVIEW
+    SHORTLISTED --> REJECTED
+    INTERVIEW --> SELECTED
+    INTERVIEW --> REJECTED
+    SELECTED --> HIRED
+    SELECTED --> REJECTED
+    HIRED --> [*]
+    REJECTED --> [*]
 ```
 
 Only the **recruiter** role may change application status, and only for applications belonging to jobs the recruiter owns. Ownership is checked in SQL by joining `applications → jobs → companies → recruiters` against the JWT identity (`r.user_id = $2`). A recruiter requesting another recruiter's application receives 403; a nonexistent application returns 404; an invalid target status returns 400. Candidates cannot change application status. Authorization is enforced at the backend/API level, not just in the UI.
@@ -226,6 +233,25 @@ Implementation (`hireflow-backend/src/services/authService.js`, `hireflow-backen
 - **Protected routes (backend):** all routes except `POST /api/auth/*` and `GET /api/jobs` require authentication; most additionally require a specific role (candidate, recruiter, or admin).
 - **Protected routes (frontend):** `ProtectedRoute` redirects unauthenticated users to `/login` and users with the wrong role to `/unauthorized`.
 - **Route ownership checks:** even with the correct role, recruiters can only touch jobs, companies, applicants, and application statuses they own. Ownership is resolved from the JWT user id via DB joins (`recruiters.user_id`, `companies.recruiter_id`), never from client-supplied ids. Candidates can only read and update their own profile and applications.
+
+```mermaid
+sequenceDiagram
+    participant U as React UI
+    participant API as Express API
+    participant DB as PostgreSQL
+    U->>API: POST /api/auth/login (email, password)
+    API->>DB: SELECT user by email
+    DB-->>API: user row (hash, role, is_active)
+    API->>API: bcrypt.compare + is_active check
+    API-->>U: 200 { token (7-day JWT), user }
+    Note over U: token stored in localStorage (hireflow.session)
+    U->>API: Request + Authorization: Bearer token
+    API->>API: authMiddleware verifies JWT → req.user
+    API->>API: requireRole checks role (403 if wrong)
+    API->>DB: ownership-checked SQL (JWT id only)
+    DB-->>API: rows
+    API-->>U: 200 JSON (or 400 / 403 / 404)
+```
 
 ## Database Design
 
@@ -339,6 +365,25 @@ src/
 - **Validation / error handling:** input validation lives in the services (email format, password length, allowed roles, required job fields, allowlisted profile fields, positive-integer ids, valid status values and transitions). Errors use consistent `{ message }` JSON responses with 400/401/403/404/409 semantics.
 - **PostgreSQL integration:** all queries use parameterized `$1`-style placeholders. Company names are joined into job/application reads so the frontend never needs extra lookups.
 
+```mermaid
+flowchart TD
+    REQ[HTTP request] --> MW[express.json + CORS]
+    MW --> ROUTE{Route matched?}
+    ROUTE -->|No| N404[404 Not found]
+    ROUTE -->|Yes| AUTH[authMiddleware<br/>verify Bearer JWT → req.user]
+    AUTH -->|Missing / invalid / expired| E401[401 Unauthorized]
+    AUTH -->|Verified| ROLE[requireRole<br/>role allowed?]
+    ROLE -->|No| E403A[403 Forbidden]
+    ROLE -->|Yes| CTRL[Controller<br/>calls service]
+    CTRL --> SVC[Service<br/>validate input + ownership check + SQL]
+    SVC -->|Not owner| E403B[403 Not authorized]
+    SVC -->|Bad input / illegal transition| E400[400 Invalid]
+    SVC --> DB[(PostgreSQL<br/>parameterized queries)]
+    DB --> RES[JSON response]
+    SVC -.->|throws HttpError| ERR[errorHandler<br/>maps status code]
+    ERR --> RES
+```
+
 Actual backend folder structure:
 
 ```
@@ -451,6 +496,17 @@ Base path: `/api`. Auth column shows the middleware actually applied in `src/rou
   - Shared: `JobCard`, `DataTable`, `StatusBadge`, `ProtectedRoute`.
 - **Authentication flow:** `AuthContext` posts credentials to `/api/auth/login`, stores `{ token, user }` in `localStorage` (`hireflow.session`), and restores the session synchronously on load. `login`/`logout` update context state; role-based redirects send each role to its dashboard.
 - **Role-based UI:** `ProtectedRoute` gates each dashboard by `allowedRoles` (`candidate`, `recruiter`, `admin`); wrong roles go to `/unauthorized`. The UI additionally disables Apply buttons for already-applied jobs or when the applications list cannot be loaded (to avoid duplicates).
+
+```mermaid
+flowchart TD
+    LG[Login page<br/>POST /api/auth/login] --> SS[Session saved<br/>localStorage: hireflow.session]
+    SS --> PR{ProtectedRoute<br/>token + role?}
+    PR -->|No token| RL[Redirect /login]
+    PR -->|Wrong role| UA[Redirect /unauthorized]
+    PR -->|candidate| CD[Candidate dashboard<br/>jobs + applications + profile]
+    PR -->|recruiter| RD[Recruiter dashboard<br/>my jobs + applicants]
+    PR -->|admin| AD[Admin dashboard<br/>users + stats]
+```
 - **API communication:** a single Axios instance (`src/api/axiosInstance.js`) uses `VITE_API_URL` as `baseURL` and attaches `Authorization: Bearer <token>` via a request interceptor. All job filtering re-queries the backend; the client never filters jobs locally as the source of truth.
 - **Application/job interfaces and status tracking:** candidates see application statuses via `StatusBadge`; recruiters advance statuses through the applicants view, which surfaces backend validation errors (invalid transition, unauthorized, not found).
 - **State management:** React context + local component state only (`AuthContext`, `useState`/`useEffect`/`useCallback`). No Redux, Zustand, or other external state library.
@@ -679,12 +735,10 @@ No production deployment configuration is checked into this repository: there ar
 
 The intended deployment shape discussed for this stack is:
 
-```
-React frontend (Vercel)
-        ↓  HTTPS / REST (VITE_API_URL)
-Express / Node.js backend (Render)
-        ↓  SQL over DATABASE_URL
-Neon PostgreSQL
+```mermaid
+flowchart TD
+    FE[React frontend<br/>Vercel - planned] -->|HTTPS / REST<br/>VITE_API_URL| BE[Express / Node.js backend<br/>Render - planned]
+    BE -->|SQL<br/>DATABASE_URL| DB[(Neon PostgreSQL - planned)]
 ```
 
 Until deployment is configured, run HireFlow locally per [Local Setup](#local-setup) with the backend on `http://localhost:5000`, the frontend on `http://localhost:5173`, and a local PostgreSQL `hireflow` database. GitHub is used for version control; no GitHub-based deployment workflow is configured.
@@ -703,21 +757,23 @@ https://github.com/shalu20-g/hireflow
 
 The complete flow as implemented:
 
-```
-Recruiter creates company (POST /api/companies)
-        ↓
-Recruiter creates job (POST /api/jobs)
-        ↓
-Candidate views open jobs (GET /api/jobs)
-        ↓
-Candidate applies (POST /api/applications)
-        ↓
-Recruiter reviews applicants (GET /api/jobs/:id/applicants)
-        ↓
-APPLIED → SHORTLISTED → INTERVIEW → SELECTED → HIRED
-   (REJECTED is reachable from each non-terminal step)
-        ↓
-Admin oversees users and platform stats (GET /api/admin/users, GET /api/admin/stats)
+```mermaid
+flowchart TD
+    subgraph R1[Recruiter]
+        C[Create company<br/>POST /api/companies] --> J[Create job<br/>POST /api/jobs]
+    end
+    subgraph C1[Candidate]
+        J --> B[Browse open jobs<br/>GET /api/jobs]
+        B --> A[Apply<br/>POST /api/applications]
+    end
+    subgraph R2[Recruiter]
+        A --> V[Review applicants<br/>GET /api/jobs/:id/applicants]
+        V --> S[Advance status<br/>PATCH /api/applications/:id/status]
+    end
+    S --> P[APPLIED → SHORTLISTED → INTERVIEW → SELECTED → HIRED<br/>REJECTED reachable from any step]
+    subgraph AD[Admin]
+        P --> M[Oversee users + stats<br/>GET /api/admin/users, /stats]
+    end
 ```
 
 Every stage above maps to an implemented endpoint and UI page. Status changes after `SELECTED` additionally support `HIRED`, which is part of the schema, seed data, and transition map.
