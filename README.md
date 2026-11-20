@@ -534,7 +534,7 @@ Not claimed: rate limiting, refresh-token rotation, HTTPS configuration, audit l
 There is **no checked-in automated test suite** in this repository:
 
 - The backend `package.json` exposes only a `start` script; there is no test runner, and no unit, integration, or API test files are present.
-- The repository currently contains no the project task tracker or top-level `docs/` directory. The frontend package defines `npm run lint` (oxlint) and `npm run build`; these are available checks, but their current pass/fail results have not been asserted here.
+- The current repository tree does not contain `TASKS.md` or a top-level `docs/` directory. The frontend package defines `npm run lint` (oxlint) and `npm run build`; these commands are available, but their current pass/fail results have not been asserted here.
 - Accordingly, no passing-test count is reported here. Any test count seen elsewhere should be treated as unverified unless it comes from a current test run in this repository.
 
 Manual verification you can run today: start the backend and frontend per [Local Setup](#local-setup), log in with the seeded accounts, and walk through browse → apply → review → status-advance → deactivate using the endpoints in [API Documentation](#api-documentation).
@@ -545,11 +545,6 @@ Actual repository layout (generated from the working tree; `node_modules/` and `
 
 ```
 HireFlow/
-├── docs/
-│   ├── ARCHITECTURE.md
-│   ├── DESIGN.md
-│   ├── PRD.md
-│   └── RULES.md
 ├── hireflow-backend/
 │   ├── src/
 │   │   ├── app.js
@@ -626,7 +621,6 @@ HireFlow/
 │   ├── vite.config.js
 │   ├── index.html
 │   └── .env.example
-├── TASKS.md
 ├── README.md
 └── .gitignore
 ```
@@ -745,9 +739,9 @@ Until deployment is configured, run HireFlow locally per [Local Setup](#local-se
 
 ## Live Demo
 
-No deployed frontend URL is present in the project configuration.
+**Previously deployed frontend:** [https://hireflow-frontend-three.vercel.app](https://hireflow-frontend-three.vercel.app)
 
-> **Placeholder:** add the deployed frontend URL here once the application is deployed.
+This URL is retained as a historical deployment reference, not a guarantee that the complete application is currently operational. The Neon PostgreSQL instance used by the project has expired, so the end-to-end demo requires a renewed/recreated database and a restored backend connection. No currently verified backend URL is available in this repository. For a reproducible demonstration, follow [Local Setup](#local-setup) with a working PostgreSQL database.
 
 ## GitHub Repository
 
