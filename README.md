@@ -99,7 +99,7 @@ Every technology below is actually used in this repository (verified against `hi
 - **Why used:** recruitment data is inherently relational (users ↔ profiles ↔ companies ↔ jobs ↔ applications), and integrity rules (no duplicate applications, valid statuses, owned records) belong in the database, not just in application code.
 - **Benefits:** foreign keys, `UNIQUE` constraints, `CHECK` constraints, and transactions guarantee correctness even under concurrency or bugs in calling code.
 - **Example in HireFlow:** `UNIQUE (job_id, candidate_id)` on `applications` is the source of truth blocking duplicate applications, and the status `CHECK` constraint rejects invalid states at the DB level (`hireflow-backend/database/schema.sql`).
-- **Future scope:** managed PostgreSQL hosting (Neon instance previously used but now expired), read replicas, full-text job search, and additional indexes as data grows.
+- **Future scope:** managed PostgreSQL hosting (Neon), read replicas, full-text job search, and additional indexes as data grows.
 
 ### node-postgres (`pg` driver)
 
@@ -741,7 +741,7 @@ Until deployment is configured, run HireFlow locally per [Local Setup](#local-se
 
 **Previously deployed frontend:** [https://hireflow-frontend-three.vercel.app](https://hireflow-frontend-three.vercel.app)
 
-This URL is retained as a historical deployment reference, not a guarantee that the complete application is currently operational. The Neon PostgreSQL instance used by the project has expired, so the end-to-end demo requires a renewed/recreated database and a restored backend connection. No currently verified backend URL is available in this repository. For a reproducible demonstration, follow [Local Setup](#local-setup) with a working PostgreSQL database.
+This URL is retained as a historical deployment reference, not a guarantee that the complete application is currently operational. The Neon PostgreSQL instance is active according to the project owner. The application still requires a successful end-to-end health check against the deployed backend and database before this URL can be described as fully verified. No currently verified backend URL is available in this repository. For a reproducible demonstration, follow [Local Setup](#local-setup) with a working PostgreSQL database.
 
 ## GitHub Repository
 
@@ -817,7 +817,7 @@ Concepts demonstrated by this codebase (all verified in source):
 - Git and GitHub version control (`https://github.com/shalu20-g/hireflow`).
 - JavaScript throughout the stack.
 
-The intended hosting shape is Vercel for the frontend, Render for the backend, and Neon PostgreSQL for the database. A historical frontend URL is listed above, but the Neon instance has expired and the repository does not establish a currently working end-to-end deployment. No deployment configuration files, Docker files, or automated backend tests are present.
+The intended hosting shape is Vercel for the frontend, Render for the backend, and Neon PostgreSQL for the database. The project owner confirms that the Neon instance is active. The repository does not independently verify the live backend/database connection or end-to-end availability. No deployment configuration files, Docker files, or automated backend tests are present.
 
 ## Future Improvements
 
