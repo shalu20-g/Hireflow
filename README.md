@@ -99,7 +99,7 @@ Every technology below is actually used in this repository (verified against `hi
 - **Why used:** recruitment data is inherently relational (users ↔ profiles ↔ companies ↔ jobs ↔ applications), and integrity rules (no duplicate applications, valid statuses, owned records) belong in the database, not just in application code.
 - **Benefits:** foreign keys, `UNIQUE` constraints, `CHECK` constraints, and transactions guarantee correctness even under concurrency or bugs in calling code.
 - **Example in HireFlow:** `UNIQUE (job_id, candidate_id)` on `applications` is the source of truth blocking duplicate applications, and the status `CHECK` constraint rejects invalid states at the DB level (`hireflow-backend/database/schema.sql`).
-- **Future scope:** managed hosting (Neon PostgreSQL — planned, not yet configured), read replicas, full-text job search, and additional indexes as data grows.
+- **Future scope:** managed PostgreSQL hosting (Neon instance previously used but now expired), read replicas, full-text job search, and additional indexes as data grows.
 
 ### node-postgres (`pg` driver)
 
@@ -817,7 +817,7 @@ Concepts demonstrated by this codebase (all verified in source):
 - Git and GitHub version control (`https://github.com/shalu20-g/hireflow`).
 - JavaScript throughout the stack.
 
-Deployment targets (Vercel for the frontend, Render for the backend, Neon PostgreSQL for the database) are the intended hosting shape but are not yet configured in this repository — see [Production Deployment](#production-deployment). Docker and automated backend testing are not present.
+The intended hosting shape is Vercel for the frontend, Render for the backend, and Neon PostgreSQL for the database. A historical frontend URL is listed above, but the Neon instance has expired and the repository does not establish a currently working end-to-end deployment. No deployment configuration files, Docker files, or automated backend tests are present.
 
 ## Future Improvements
 
