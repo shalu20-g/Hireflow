@@ -147,13 +147,13 @@ Every technology below is actually used in this repository (verified against `hi
 
 - **Why used:** tracks every change, enables branching and review, and hosts the canonical repository.
 - **Benefits:** full history (`git log`), safe experimentation, and collaboration through pull requests.
-- **Example in HireFlow:** repository at `https://github.com/shalu20-g/hireflow`; `TASKS.md` tracks completed vs. remaining work.
+- **Example in HireFlow:** repository at `https://github.com/shalu20-g/hireflow`; The repository's current tracked files are listed in the Project Structure section below.
 - **Future scope:** CI/CD pipelines (lint + build + future tests on every push) and protected main-branch reviews.
 
 ### Planned hosting: Vercel, Render, Neon PostgreSQL
 
 - **Why planned:** Vercel fits Vite static builds, Render fits a Node.js API process, and Neon provides managed serverless PostgreSQL — matching this stack without server management.
-- **Status:** not yet configured — no deployment configs, Docker files, or live URLs exist in the repository (`TASKS.md` lists production deployment as future work). See [Production Deployment](#production-deployment).
+- **Status:** no deployment configuration files are present in the current repository tree. A previous frontend deployment URL is referenced in the internship report, but the connected database is reported to have expired. See [Live Demo](#live-demo).
 - **Future scope:** frontend on Vercel, backend on Render, database on Neon, with HTTPS, managed secrets, and preview environments.
 
 ## Key Features
@@ -534,7 +534,7 @@ Not claimed: rate limiting, refresh-token rotation, HTTPS configuration, audit l
 There is **no checked-in automated test suite** in this repository:
 
 - The backend `package.json` exposes only a `start` script; there is no test runner, and no unit, integration, or API test files are present.
-- `TASKS.md` and `docs/` record verification via focused integration scripts plus live PostgreSQL and browser walkthroughs, with `npm run lint` (oxlint, 0 warnings/errors) and `npm run build` as the frontend checks.
+- The repository currently contains no the project task tracker or top-level `docs/` directory. The frontend package defines `npm run lint` (oxlint) and `npm run build`; these are available checks, but their current pass/fail results have not been asserted here.
 - Accordingly, no passing-test count is reported here. Any test count seen elsewhere should be treated as unverified unless it comes from a current test run in this repository.
 
 Manual verification you can run today: start the backend and frontend per [Local Setup](#local-setup), log in with the seeded accounts, and walk through browse → apply → review → status-advance → deactivate using the endpoints in [API Documentation](#api-documentation).
@@ -731,7 +731,7 @@ Use placeholders such as `your_database_url` and `your_secret` — never commit 
 
 ## Production Deployment
 
-No production deployment configuration is checked into this repository: there are no Vercel, Render, or Neon config files, no Docker files, and no CI/CD pipelines. `TASKS.md` explicitly lists production deployment (hosting, environment management, HTTPS) as future work.
+No production deployment configuration is checked into this repository: there are no Vercel, Render, or Neon config files, no Docker files, and no CI/CD pipelines. The repository alone therefore does not establish a currently operational hosted environment.
 
 The intended deployment shape discussed for this stack is:
 
@@ -827,7 +827,7 @@ Deployment targets (Vercel for the frontend, Render for the backend, Neon Postgr
 
 ## Future Improvements
 
-The following are **FUTURE / NOT CURRENTLY IMPLEMENTED** (sourced from `TASKS.md` and `docs/`):
+The following are **FUTURE / NOT CURRENTLY IMPLEMENTED** based on the current codebase and its deployment configuration:
 
 - Production deployment (hosting, environment management, HTTPS for Vercel / Render / Neon).
 - CI/CD and an automated test runner in the repo.
