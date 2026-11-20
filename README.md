@@ -739,9 +739,9 @@ Until deployment is configured, run HireFlow locally per [Local Setup](#local-se
 
 ## Live Demo
 
-**Previously deployed frontend:** [https://hireflow-frontend-three.vercel.app](https://hireflow-frontend-three.vercel.app)
+**Frontend deployment:** [https://hireflow-frontend-three.vercel.app](https://hireflow-frontend-three.vercel.app)
 
-This URL is retained as a historical deployment reference, not a guarantee that the complete application is currently operational. The Neon PostgreSQL instance is active according to the project owner. The application still requires a successful end-to-end health check against the deployed backend and database before this URL can be described as fully verified. No currently verified backend URL is available in this repository. For a reproducible demonstration, follow [Local Setup](#local-setup) with a working PostgreSQL database.
+The project owner confirms that the Neon PostgreSQL database instance is active. The repository does not expose a public backend URL or deployment credentials, so a reviewer should verify the deployed API through its `/api/health` endpoint and complete a database-backed workflow during the demonstration. No currently verified backend URL is available in this repository. For a reproducible demonstration, follow [Local Setup](#local-setup) with a working PostgreSQL database.
 
 ## GitHub Repository
 
